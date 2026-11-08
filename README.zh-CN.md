@@ -65,6 +65,7 @@ ThinkSmart View 并不是消费级平板——它是一台 8 英寸的 Teams 会
 | HA 仪表盘 / Kiosk                 | [Lineage 15.1(Android 8.1)](#操作系统与-rom) | 最成熟;可跑 Fully Kiosk、View Assist、Play Store(pico GApps) |
 | 真正的 Linux 桌面                 | [Ubuntu 24.04 + Plasma 6](#操作系统与-rom)   | 扬声器/麦克风/蓝牙/旋转/靠近唤醒均可用;摄像头还在研究        |
 | Mainline Linux / Alpine、深度折腾 | [postmarketOS](#操作系统与-rom)              | FelixKa 的原始 PMOS 移植,也是 Ubuntu 移植的基础              |
+| 带屏幕的 HA 语音卫星              | [Debian 13 + home-companion](#操作系统与-rom) | 极简原生方案(系统本身约 190 MB 内存);唤醒词、计时器、HA 仪表盘、AirPlay |
 | 最小改动、保留原生系统            | [ROOT / Magisk 路线](#刷机教程)              | 通过 microG 装 Play Store、更新 WebView、换启动器            |
 
 ## 操作系统与 ROM
@@ -72,6 +73,7 @@ ThinkSmart View 并不是消费级平板——它是一台 8 英寸的 Teams 会
 - [LineageOS 15.1 for ThinkSmart View(`starfire`)](https://s3.us-west-1.wasabisys.com/rom-release/LineageOS/15.1/starfire/lineage-15.1-20240531-UNOFFICIAL-starfire.zip) — @deadman(deadman96385)与 @electimon 制作的非官方 Lineage 15.1(Android 8.1)。修复了早期版本浏览器无声音、触控超时、Android 11 换启动器崩溃等问题。**仪表盘/Kiosk 用途的首选系统。** 偶尔还有更新,但不要指望官方支持。
 - [Ubuntu 24.04 for ThinkSmart View](https://github.com/rickx/ubuntu-thinksmart) — 定制 Ubuntu 24.04 ARM64 移植,内核 6.19.5-msm8953。主推镜像为 Plasma Mobile 6(KDE neon 6.7.0)。扬声器、麦克风、蓝牙、加速度计自动旋转、亮度滑条、靠近唤醒全部可用;Venus V4L2 硬解(H.264 1080p 约 1.26 倍实时,HEVC 约 5.7 倍);摄像头驱动研究中。
 - [thinksmart-ubuntu-image(小智语音助手)](https://github.com/justhalfbit/thinksmart-ubuntu-image) — 基于 rickx 移植构建的 Ubuntu 24.04 镜像,去掉 Plasma 桌面,开机直达本地语音助手:「小麦小麦」唤醒词、本机语音识别、可接 Claude / DeepSeek 等大模型,带网页管理后台。包含设备修复(双麦克风、扬声器、熄屏、接近唤醒、WiFi 稳定性、GPU 白屏补丁)和一份同时面向人类与 AI 助手的完整刷机教程。界面与唤醒词目前以中文为主。
+- [ThinkSmart View Debian](https://github.com/m0s4ik/thinksmart-view-debian) — 基于 postmarketOS msm8953 内核的极简 Debian 13(trixie),无桌面、无浏览器:整个系统约占 190 MB 内存,约 24 秒开机。屏幕、触控、Adreno 506 GPU(精简版 Mesa)、扬声器(TAS5782M)、双麦克风、WiFi、加速度计、光线/接近传感器和 Venus 硬解均可用;可选 WPE WebKit 与 AirPlay 运行时。通过 EDL 刷入,适合作为自己应用的轻量底座。
 - [postmarketOS 设备页:lenovo-starfire](<https://wiki.postmarketos.org/wiki/Lenovo_ThinkSmart_View_(lenovo-starfire)>) — FelixKa 的原始 PMOS(Alpine Linux)移植,包含后来所有工作所依赖的 TAS5782M 音频驱动参考实现。设备包:`device-lenovo-starfire`(pmaports)。
 - **原厂安卓(Teams / "Teams & Others")** — 一切刷机的基础。先刷 `200628.084` 版本回到已知良好的状态(见[固件下载](#固件与镜像下载));泄露的 userdebug 版本可在 设置 → 关于 → 连点固件版本 后开启 ADB。
 
@@ -147,6 +149,7 @@ ThinkSmart View 并不是消费级平板——它是一台 8 英寸的 Teams 会
 ## Home Assistant 与智能家居
 
 - [dinki/View-Assist](https://github.com/dinki/View-Assist) — 让 TSV 在 HA 圈走红的旗舰项目:带可视反馈的语音助手卫星设备,支持计时器、天气、摄像头画面等视图。跑在安卓(Fully Kiosk)和 ESPHome 卫星上。
+- [home-companion](https://github.com/m0s4ik/home-companion) — 为 TSV 打造的原生(Rust)Home Assistant 带屏语音卫星,运行在 ThinkSmart View Debian 上:本机唤醒词("Okay Alfred")和一位动画管家角色,离线可用的本地计时器、闹钟与提醒,全屏显示 HA 自带仪表盘,AirPlay 音乐与投屏。在屏幕上扫二维码即可完成设置(Wyoming 卫星 + HA 内置 MCP 客户端,无需加载项)。支持意大利语和英语。
 - [Fully Kiosk Browser](https://www.fully-kiosk.com) + HA 仪表盘 — 最常见的 TSV 组合(安卓设置建议见 pgale 教程:无锁屏、隐藏电池图标、音量键唤醒、自动旋转开关的 bug 规避)。
 - [HA 社区:基于 TSV 的家庭仪表盘与多台 Fully Kiosk 设备管理](https://community.home-assistant.io/t/my-take-on-a-home-dashboard-running-on-the-lenovo-thinksmart-view-and-managing-multiple-devices-running-fully-kiosk/718355) — 仪表盘设计与机群管理。
 - [HA 社区:Lenovo ThinkSmart View ROM/OS Development](https://community.home-assistant.io/t/lenovo-thinksmart-view-rom-os-development/676324) — 上述一切的源头讨论帖。
